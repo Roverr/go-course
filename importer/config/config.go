@@ -5,7 +5,7 @@ import "log"
 // Feed represents a given feed which should be imported
 type Feed interface {
 	IsHealthy() bool
-	Crawl() error
+	Crawl(chan<- error)
 }
 
 // Store represents an interface for the stores
@@ -22,9 +22,9 @@ type JobQueue interface {
 
 // Settings represents context for the application to run
 type Settings struct {
-	feeds  []*Feed
-	stores []*Store
-	queue  *JobQueue
+	feeds []*Feed
+	store *Store
+	queue *JobQueue
 }
 
 // NewSettings return a pointer of Settings
@@ -38,14 +38,6 @@ func (s *Settings) AddFeed(f *Feed) {
 		return
 	}
 	s.feeds = append(s.feeds, f)
-}
-
-// AddStore is for adding a new store to the feed
-func (s *Settings) AddStore(se *Store) {
-	if s == nil {
-		return
-	}
-	s.stores = append(s.stores, se)
 }
 
 // SetQueue is for setting the queue for the application

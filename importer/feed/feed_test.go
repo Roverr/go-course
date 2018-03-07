@@ -3,6 +3,7 @@ package feed
 import (
 	"testing"
 
+	"github.com/Roverr/go-course/importer/store"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -11,7 +12,8 @@ var (
 )
 
 func TestInitialize(t *testing.T) {
-	feeds, err := Initialize()
+	store.Initialize()
+	feeds, err := Initialize(nil)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, feeds)
 }

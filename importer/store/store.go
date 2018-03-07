@@ -6,11 +6,9 @@ import (
 )
 
 // Initialize runs through the stores, initializes and returns them
-func Initialize() (stores []*config.Store, err error) {
+func Initialize() (*config.Store, error) {
 	var store config.Store
-	if store, err = memory.New(); err != nil {
-		return
-	}
-	stores = append(stores, &store)
-	return stores, nil
+	var err error
+	store, err = memory.New()
+	return &store, err
 }
