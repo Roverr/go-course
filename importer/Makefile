@@ -1,4 +1,4 @@
 test: 
-	go test `glide nv`
+	go test ./...
 install:
 	dep ensure && cd ./mock && npm install

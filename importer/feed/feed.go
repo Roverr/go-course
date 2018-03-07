@@ -6,7 +6,7 @@ import (
 )
 
 // Initialize gives back an array of feeds
-func Initialize(store *config.Store) (feeds []*config.Feed, err error) {
+func Initialize(store config.Store) (feeds []*config.Feed, err error) {
 	var feed config.Feed
 	if feed, err = mock.New(store); err != nil {
 		return
