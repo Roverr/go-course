@@ -15,5 +15,5 @@ type Horse struct {
 // Odds represents an object in the odds array
 type Odds struct {
 	ID  int     `json:"id"`
-	Odd float64 `json:"odd"`
+	Odd float64 `json:"odds"`
 }

@@ -22,16 +22,16 @@ const data = {
     }],
     "odds": [{
         "id": 1,
-        "odd": chance.floating({min: 0, max: 47}),
+        "odds": chance.floating({min: 0, max: 47}),
     },{
         "id": 2,
-        "odd": chance.floating({min: 0, max: 47}),
+        "odds": chance.floating({min: 0, max: 47}),
     },{
         "id": 3,
-        "odd": chance.floating({min: 0, max: 47}),
+        "odds": chance.floating({min: 0, max: 47}),
     },{
         "id": 4,
-        "odd": chance.floating({min: 0, max: 47}),
+        "odds": chance.floating({min: 0, max: 47}),
     }],
 };
 

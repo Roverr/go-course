@@ -1,7 +1,6 @@
 package mock
 
 import (
-	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -14,13 +13,14 @@ import (
 // Feed represents a mock feed
 type Feed struct {
 	URL     string `envconfig:"MOCK_URL" default:"http://localhost:8000"`
+	Key     string `envconfig:"MOCK_KEY" default:"mock-feed"`
 	healthy bool
-	store   *config.Store
+	store   config.Store
 	client  *http.Client
 }
 
 // New returns a new feed
-func New(store *config.Store) (*Feed, error) {
+func New(store config.Store) (*Feed, error) {
 	var f Feed
 	err := envconfig.Process("FEED", &f)
 	if err != nil {
@@ -47,35 +47,47 @@ func (f *Feed) setHealth(healthy *bool) {
 	f.healthy = *healthy
 }
 
+func (f *Feed) request() (*model.APIResponse, error) {
+	// Prepare request to URL without request body
+	req, err := http.NewRequest("GET", f.URL, nil)
+	if err != nil {
+		return nil, err
+	}
+	// Do request
+	resp, err := f.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	// Read response body to bytes
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	// Parse bytes
+	var parsed model.APIResponse
+	if err = json.Unmarshal(body, &parsed); err != nil {
+		return nil, err
+	}
+	return &parsed, err
+}
+
 // Crawl is for making a request to the feed and import the data
 func (f *Feed) Crawl(errCh chan<- error) {
 	// Keep the health indicator to false until the ned of the function
 	var healthy bool
 	defer f.setHealth(&healthy)
-	// Prepare request to URL without request body
-	req, err := http.NewRequest("POST", f.URL, bytes.NewBuffer(nil))
+
+	// Make the request
+	resp, err := f.request()
 	if err != nil {
 		errCh <- err
 		return
 	}
-	// Do request
-	resp, err := f.client.Do(req)
-	if err != nil {
+	if err = f.store.Insert(f.Key, *resp); err != nil {
 		errCh <- err
 		return
 	}
-	// Read response body to bytes
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		errCh <- err
-		return
-	}
-	// Parse bytes
-	var parsed model.APIResponse
-	if err = json.Unmarshal(body, &parsed); err != nil {
-		errCh <- err
-		return
-	}
+
 	healthy = true
 }
 
