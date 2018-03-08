@@ -12,8 +12,10 @@ var (
 )
 
 func TestInitialize(t *testing.T) {
-	store.Initialize()
-	feeds, err := Initialize(nil)
+	store, err := store.Initialize()
+	assert.Nil(t, err)
+	assert.NotNil(t, store)
+	feeds, err := Initialize(*store)
 	assert.Nil(t, err)
 	assert.NotEmpty(t, feeds)
 }
