@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/Roverr/go-course/importer/config"
 	"github.com/Roverr/go-course/importer/feed/mock/model"
+	"github.com/Roverr/go-course/importer/pkg"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -15,12 +15,12 @@ type Feed struct {
 	URL     string `envconfig:"MOCK_URL" default:"http://localhost:8000"`
 	Key     string `envconfig:"MOCK_KEY" default:"mock-feed"`
 	healthy bool
-	store   config.Store
+	store   pkg.Store
 	client  *http.Client
 }
 
 // New returns a new feed
-func New(store config.Store) (*Feed, error) {
+func New(store pkg.Store) (*Feed, error) {
 	var f Feed
 	err := envconfig.Process("FEED", &f)
 	if err != nil {
@@ -45,6 +45,11 @@ func (f *Feed) setHealth(healthy *bool) {
 		return
 	}
 	f.healthy = *healthy
+}
+
+// GetKey returns a key for the feed
+func (f Feed) GetKey() string {
+	return f.Key
 }
 
 func (f *Feed) request() (*model.APIResponse, error) {
@@ -91,4 +96,4 @@ func (f *Feed) Crawl(errCh chan<- error) {
 	healthy = true
 }
 
-var _ config.Feed = (*Feed)(nil)
+var _ pkg.Feed = (*Feed)(nil)

@@ -1,11 +1,10 @@
-package config
-
-import "log"
+package pkg
 
 // Feed represents a given feed which should be imported
 type Feed interface {
 	IsHealthy() bool
 	Crawl(chan<- error)
+	GetKey() string
 }
 
 // Store represents an interface for the stores
@@ -14,17 +13,24 @@ type Store interface {
 	Connect() error
 }
 
-// JobQueue represents a queue which is for getting jobs
-type JobQueue interface {
-	GetOne() []byte
+// Scheduler represents a master which is going to schedule the jobs
+// for the other workers
+type Scheduler interface {
+	AddListener(func(<-chan string))
 	Close() error
+}
+
+// Queue represents the underlying Store of a Scheduler
+type Queue interface {
+	GetOne() ([]byte, error)
+	Store(data []byte)
 }
 
 // Settings represents context for the application to run
 type Settings struct {
-	feeds []*Feed
-	store *Store
-	queue *JobQueue
+	feeds     []*Feed
+	store     *Store
+	scheduler *Scheduler
 }
 
 // NewSettings return a pointer of Settings
@@ -38,17 +44,4 @@ func (s *Settings) AddFeed(f *Feed) {
 		return
 	}
 	s.feeds = append(s.feeds, f)
-}
-
-// SetQueue is for setting the queue for the application
-func (s *Settings) SetQueue(queue *JobQueue) {
-	if s == nil {
-		return
-	}
-	if s.queue != nil {
-		if err := (*s.queue).Close(); err != nil {
-			log.Fatal(err)
-		}
-	}
-	s.queue = queue
 }

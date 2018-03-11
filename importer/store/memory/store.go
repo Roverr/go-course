@@ -1,6 +1,6 @@
 package memory
 
-import "github.com/Roverr/go-course/importer/config"
+import "github.com/Roverr/go-course/importer/pkg"
 
 // Store represents a memory store
 type Store struct {
@@ -29,4 +29,4 @@ func (d *Store) Connect() error {
 }
 
 // Interface validation
-var _ config.Store = (*Store)(nil)
+var _ pkg.Store = (*Store)(nil)
