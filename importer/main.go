@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"net/http"
 	"time"
 
 	"github.com/Roverr/go-course/importer/config"
@@ -43,5 +45,12 @@ func main() {
 		worker := feed.NewWorker(feeds, i)
 		scheduler.AddListener(worker.Listen)
 	}
+
+	// Start profilling function
+	go func() {
+		router := initProfiling()
+		fmt.Println(fmt.Sprintf("Profiling listening on: %s", settings.ProfilingPort))
+		http.ListenAndServe(settings.ProfilingPort, router)
+	}()
 	<-time.After(325235325235)
 }

@@ -2,3 +2,5 @@ vendor
 node_modules
 .envrc
 importer
+heap
+goroutines
