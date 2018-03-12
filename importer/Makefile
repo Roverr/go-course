@@ -2,7 +2,8 @@ test: ## Runs tests on the package
 	go test -cover ./...
 install: ## Installs dependencies
 	dep ensure && cd ./mock && npm install
-
+docker-compose: ## Alias for docker compose up
+	docker-compose up
 coverProfile: ## Creates cover profile
 	go test -coverprofile=coverage.out ./...
 coverage: ## Generates coverage html

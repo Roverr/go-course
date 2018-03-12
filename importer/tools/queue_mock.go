@@ -34,7 +34,7 @@ func (p *Pusher) MockPushJobs() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("MOCK || Written into queue ")
+		fmt.Println("MOCK JOB || Written into queue ")
 		p.queue.Store(mockRequest)
 	}
 }

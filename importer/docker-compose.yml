@@ -1,0 +1,16 @@
+version: '3'
+services:
+  importer:
+    build: .
+    links:
+      - "mock:mock"
+    ports:
+      - "5000:5000"
+    environment:
+      - FEED_MOCK_URL=http://mock:7000
+  mock:
+    build: ./mock
+    ports:
+      - "7000:7000"
+    environment:
+      - PORT=7000

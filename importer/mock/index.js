@@ -35,10 +35,13 @@ const data = {
     }],
 };
 
-http.createServer(function(request, response){
+const server = http.createServer(function(request, response){
   response.writeHead(200, {'Content-Type':'application/json'});
   response.write(JSON.stringify(data));
   response.end();
 
-}).listen(7000);
+})
+
+console.log(`Server is listening on ${process.env.PORT}`)
+server.listen(process.env.PORT);
 

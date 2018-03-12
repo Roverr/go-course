@@ -6,7 +6,6 @@ import (
 	"log"
 
 	"github.com/Roverr/go-course/importer/feed/model"
-	"github.com/davecgh/go-spew/spew"
 )
 
 // Worker describes a worker in the system
@@ -31,7 +30,6 @@ func (w *Worker) Listen(sh <-chan string) {
 		case model.Mock:
 			feed, ok := w.feeds[model.Mock]
 			if !ok {
-				spew.Dump(w.feeds)
 				log.Fatal(model.NewErrFeedNotFound(model.Mock))
 			}
 			err := feed.Crawl()
