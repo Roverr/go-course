@@ -2,7 +2,9 @@ package tools
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/Roverr/go-course/importer/pkg"
 	"golang.org/x/time/rate"
@@ -20,7 +22,7 @@ type Pusher struct {
 func NewPusher(queue pkg.Queue) Pusher {
 	pusher := Pusher{
 		queue:   queue,
-		limiter: rate.NewLimiter(1, 3),
+		limiter: rate.NewLimiter(rate.Every(time.Second), 3),
 	}
 	return pusher
 }
@@ -32,6 +34,7 @@ func (p *Pusher) MockPushJobs() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		fmt.Println("MOCK || Written into queue ")
 		p.queue.Store(mockRequest)
 	}
 }

@@ -3,7 +3,7 @@ package pkg
 // Feed represents a given feed which should be imported
 type Feed interface {
 	IsHealthy() bool
-	Crawl(chan<- error)
+	Crawl() error
 	GetKey() string
 }
 
@@ -18,6 +18,7 @@ type Store interface {
 type Scheduler interface {
 	AddListener(func(<-chan string))
 	Close() error
+	GetQueue() Queue
 }
 
 // Queue represents the underlying Store of a Scheduler

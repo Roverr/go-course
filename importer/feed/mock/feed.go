@@ -13,7 +13,7 @@ import (
 // Feed represents a mock feed
 type Feed struct {
 	URL     string `envconfig:"MOCK_URL" default:"http://localhost:8000"`
-	Key     string `envconfig:"MOCK_KEY" default:"mock-feed"`
+	Key     string `default:"mock"`
 	healthy bool
 	store   pkg.Store
 	client  *http.Client
@@ -77,23 +77,23 @@ func (f *Feed) request() (*model.APIResponse, error) {
 }
 
 // Crawl is for making a request to the feed and import the data
-func (f *Feed) Crawl(errCh chan<- error) {
+func (f *Feed) Crawl() (err error) {
 	// Keep the health indicator to false until the ned of the function
 	var healthy bool
 	defer f.setHealth(&healthy)
 
 	// Make the request
-	resp, err := f.request()
+	var resp *model.APIResponse
+	resp, err = f.request()
 	if err != nil {
-		errCh <- err
 		return
 	}
 	if err = f.store.Insert(f.Key, *resp); err != nil {
-		errCh <- err
 		return
 	}
 
 	healthy = true
+	return
 }
 
 var _ pkg.Feed = (*Feed)(nil)

@@ -1,4 +1,4 @@
-package queue
+package scheduler
 
 import (
 	"log"
@@ -10,14 +10,14 @@ import (
 // Service describes the service function of the queue
 type Service struct {
 	out   chan string
-	store pkg.Queue
+	queue pkg.Queue
 }
 
 // Initialize returns a scheduler
 func Initialize() pkg.Scheduler {
-	memory := memory.NewStore()
+	memory := memory.NewQueue()
 	service := Service{
-		store: &memory,
+		queue: &memory,
 		out:   make(chan string, 50),
 	}
 	go service.schedule()
@@ -26,7 +26,7 @@ func Initialize() pkg.Scheduler {
 
 // AddListener calls the given worker function when new data arrives
 func (s *Service) AddListener(f func(<-chan string)) {
-	f(s.out)
+	go f(s.out)
 }
 
 // Close closes the channel and ends the connection
@@ -35,9 +35,17 @@ func (s *Service) Close() error {
 	return nil
 }
 
+// GetQueue is for accessing the queue of the scheduler
+func (s *Service) GetQueue() pkg.Queue {
+	if s == nil {
+		return nil
+	}
+	return s.queue
+}
+
 func (s *Service) schedule() {
 	for {
-		data, err := s.store.GetOne()
+		data, err := s.queue.GetOne()
 		if err != nil {
 			log.Fatal(err)
 		}

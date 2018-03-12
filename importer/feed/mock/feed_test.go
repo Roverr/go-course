@@ -35,13 +35,11 @@ func newFeedWithAPI() (*httptest.Server, *Feed, error) {
 
 func TestNewFeed(t *testing.T) {
 	err := os.Setenv("FEED_MOCK_URL", testURL)
-	err = os.Setenv("FEED_MOCK_KEY", testKey)
 	assert.Nil(t, err)
 	feed, err := New(nil)
 	assert.Nil(t, err)
 	assert.NotNil(t, feed)
 	assert.Equal(t, feed.URL, testURL)
-	assert.Equal(t, feed.Key, testKey)
 }
 
 func checkIfHorsesAreTheSame(t *testing.T, a []model.Horse, b []model.Horse) {
