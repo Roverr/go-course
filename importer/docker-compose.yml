@@ -9,7 +9,7 @@ services:
     environment:
       - FEED_MOCK_URL=http://mock:7000
   mock:
-    build: ./mock
+    build: ./test/mock
     ports:
       - "7000:7000"
     environment:
